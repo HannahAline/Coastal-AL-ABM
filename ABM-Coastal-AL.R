@@ -2,13 +2,26 @@
 
 #-------------------------------------------------------------------------------
 #Initialize Population
+#We need to set the population for the model and assign values to various 
+#parameters. These include gender, race, and education (which will be determined
+#based on the individuals gender and race with a nested loop)
 
-eds=unique
+#Add in other demographics later? Maybe age, zipcode, angler, visit motivations
 
-gender = unique(data$gender) #Male = M and Female = F
-races = unique(data$race) #Native, White, Black, Asian
-education
-    
+eds=unique #This is our original data, which will be loaded in
+
+#Set the different population parameters
+  #This will be characterized from our original data
+gender = unique(data$gender)
+races = unique(data$race) 
+
+#Nested loop (set genders --> race --> education)
+education #Need help getting the loop code
+
+#This if:then nested loop means...
+#if Gender/Race is...
+#Then Education is...
+
       for(g in 1:length(genders)){
         for(r in(1:length(races))){
           pop$ed[pop$gender==gender[g] & pop$races==races[t]] = sample(
@@ -19,36 +32,36 @@ education
             sample(colnames(eds.tt), probs=eds.tt, replace=T)
           )
         }
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
+
       }
 
-#Agents (Additive or multiplicative)
+#-------------------------------------------------------------------------------       
+#Set behaviors and model rules based on their demographics (gender, race, education)        
 
+#Set their knowledge of wildlife/policy based on their demographics
+#This is related to their willingness to change behavior
 
+#(we will get this relationship from the glm we are running)
+  #i.e. males are less likely, white is less likely, etc.
 
-#Set parameters
-  #Race
-  #Gender 
+#These if:then rules are based on their demographic variables
+  #Such as, IF they are more knowledgeable about wildlife based on their
+  #demographics, THEN they are more willing to change their behavior
 
-  #if:then
-    #if Race is...
-      #Then Education is...
+#-------------------------------------------------------------------------------       
+#Let the model run with the given rules from above
 
-  #if:then
-    #Race (0:non-white, 1:white)
-    #Gender (0:male, 1:female)
-    #Education (0:lower, 1:higher)
+#Set loop length, maybe 1 week?
 
-#Environment
+#Here we could also put an education component, which would change peoples behaviors
+  #Maybe a probability of encountering signage
 
-#i love turtles
+#We want to be able to change peoples ability to 'learn' and 'forget' rules
+
+#-------------------------------------------------------------------------------
+#Output
+
+#Here we will record the results of the iteration
+
+#-------------------------------------------------------------------------------
+#End
