@@ -3,6 +3,15 @@
 # Alabama Coastal Tourism Agent-Based Model                                    #
 #                                                                              #
 ################################################################################
+setwd("C:\Users\hanna\OneDrive\Documents\GitHub\Coastal-AL-ABM")
+
+data = read.csv(file.choose())
+
+
+#parameters
+propF = length(data$GenderBin[data$GenderBin==1])/length(data$GenderBin[!is.na(data$GenderBin)]) #Length is how many
+
+
 
 #Individual based
 #  - each person/agent has properties
@@ -30,11 +39,13 @@ for( i in 2:nPop1){
   
 } # Thats for how many agenst are in the population
 
-#Determine if they like to meet others
+Agent1$Gender = sample(c(0,1), replace=T, prob=c(propF, (1-propF)))
+
+#Determine their probability of interacting with a dolphin
 Mix1 <- Agent1$Dolphin[ i ]
 #How many agents will they meet
-Meet1 <- round(Mix1*3,0) #This allows us to see how many people they are going to meet
-#Grab the agents they will meet
+Meet1 <- round(Mix1*3,0) #This allows us to see how dolphins they see
+#Grab the dolphins they will meet
 Meet2 <- sample( 1:nPop1, Meet1, replace = TRUE)
 
 for( j in 1:length(Meet2) ){
