@@ -8,8 +8,11 @@ setwd("C:\Users\hanna\OneDrive\Documents\GitHub\Coastal-AL-ABM")
 data = read.csv(file.choose())
 
 
+#Common terms
+#Length is how many
+
 #parameters
-propF = length(data$GenderBin[data$GenderBin==1])/length(data$GenderBin[!is.na(data$GenderBin)]) #Length is how many
+propF = length(data$GenderBin[data$GenderBin==1])/length(data$GenderBin[!is.na(data$GenderBin)]) 
 
 
 
