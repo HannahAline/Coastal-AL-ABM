@@ -3,20 +3,56 @@
 # Alabama Coastal Tourism Agent-Based Model                                    #
 #                                                                              #
 ################################################################################
+
+#Good idea - maybe make this a model of summer tourism when there is the most boating in AL
+
+#-------------------------------------------------------------------------------
+
+# Load in the data
+
 setwd("C:\Users\hanna\OneDrive\Documents\GitHub\Coastal-AL-ABM")
 
 data = read.csv(file.choose())
 
+#-------------------------------------------------------------------------------
+
+# Notes
 
 #Common terms
-#Length is how many
-
-#parameters
-propF = length(data$GenderBin[data$GenderBin==1])/length(data$GenderBin[!is.na(data$GenderBin)]) 
+  # Length = how many
+  # !is.na = 
 
 
+#Parameterization: selecting values for model parameters
+  #This is where you try to "break" your model - make sure it is following all of the rules
+    #For our model, maybe we ensure they interact with a dolphi at least one time?
 
-#Individual based
+#Calibration: type of parameterization where we vary one parameter and compare
+#model output to real system (via pattern matching)
+    #Calibration happens when the whole model is running
+        #Goals
+          #1. Make sure the model behaves like a real system
+          #2. Estimate values of parameters where we have no good estimates
+          #3. Test how realistic the model is
+
+        #Approach
+          #Run the model many time using different parameter values. Then analyze the outputs
+          #to determine which value caused model to produce expected patterns
+
+          #Be sure that known values are comparable to model outcomes
+              #This is when we compare our survey data results with the model output
+
+#Pattern matching: 
+    #Theory development (pattern matching) focused on submodels/functions and how these work
+
+#-------------------------------------------------------------------------------
+
+#parameters - these are our variables
+propF = length(data$GenderBin[data$GenderBin==1])/length(data$GenderBin[!is.na(data$GenderBin)]) #Proportion of Females
+
+#Use the table function for the education levels
+
+#Individual based - each "agent" is a person in a coastal population
 #  - each person/agent has properties
 #  - parameters and attributes
 #  - Agents/individuals to have behaviors based on those parameters
@@ -40,9 +76,9 @@ for( i in 2:nPop1){
                        Dolphin = runif(1,0,1))
   Agent1 <- rbind( Agent1, Agent2)
   
-} # Thats for how many agenst are in the population
+} 
 
-Agent1$Gender = sample(c(0,1), replace=T, prob=c(propF, (1-propF)))
+Agent1$Gender = sample(c(0,1), replace=T, prob=c(propF, (1-propF))) #Assign gender
 
 #Determine their probability of interacting with a dolphin
 Mix1 <- Agent1$Dolphin[ i ]
