@@ -10,9 +10,9 @@
 
 # Load in the data
 
-setwd("C:\Users\hanna\OneDrive\Documents\GitHub\Coastal-AL-ABM")
+setwd()
 
-data = read.csv(file.choose())
+datum = read.csv(file.choose())
 
 #-------------------------------------------------------------------------------
 
@@ -47,7 +47,10 @@ data = read.csv(file.choose())
 #-------------------------------------------------------------------------------
 
 #parameters - these are our variables
-propF = length(data$GenderBin[data$GenderBin==1])/length(data$GenderBin[!is.na(data$GenderBin)]) #Proportion of Females
+
+#Proportion of females
+propF = length(datum$GenderBin[datum$GenderBin==1])/length(datum$GenderBin[!is.na(datum$GenderBin)]) #Proportion of Females
+
 
 #Use the table function for the education levels
 
