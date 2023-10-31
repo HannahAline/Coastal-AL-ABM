@@ -25,7 +25,7 @@ data = read.csv(file.choose())
 
 #Parameterization: selecting values for model parameters
   #This is where you try to "break" your model - make sure it is following all of the rules
-    #For our model, maybe we ensure they interact with a dolphi at least one time?
+    #For our model, maybe we ensure they interact with a dolphin at least one time?
 
 #Calibration: type of parameterization where we vary one parameter and compare
 #model output to real system (via pattern matching)
