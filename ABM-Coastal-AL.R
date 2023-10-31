@@ -42,8 +42,7 @@ data = read.csv(file.choose())
           #Be sure that known values are comparable to model outcomes
               #This is when we compare our survey data results with the model output
 
-#Pattern matching: 
-    #Theory development (pattern matching) focused on submodels/functions and how these work
+
 
 #-------------------------------------------------------------------------------
 
@@ -185,5 +184,50 @@ education #Need help getting the loop code
 
 #Here we will record the results of the iteration
 
+
+#My models runs! But now what?
+    #Does the output match the known data you have for your system (this would be our survey results)
+    #Which parameters are the strongest influences on how my model performs
+
+#Model currencies
+
+    #Summary statistics or observation that often correspond to what you'd measyre in an experiment,
+    #if the experiment you are modelling was feasible
+
+    #It can be really helpful to have more than one current because e this is a natural 
+    #place to compare discuss model outputs
+
+#Types to consider
+    #patterns you outlines in ODD purpose statements
+    #Standard measurement of statistical distribution of your results: mean, median, standard deviation, etc.
+    #Differences among agents: genetic variability, age, education level, sex
+    #Things that characterize model stability: population size
+
+#Initial model experiments
+    #Simplify the model conditions
+    #Run model with several parameter values for a single variable
+    #Analyze how output (using the currency you've decided on for your model) changed with that one parameter
+    #Repeat for other parameters
+
+#You really want to try to make your model break
+    #really small or really large population size
+    #Variance parameters set too high/low, leading to weird values being fed into functions
+    #Syntax errors in sections of code that only get run occasionally
+  #When you find things that cause your model to break add check for these things in the future
+  # if(nrow(pop)<1){
+      #print("Population size too small")
+        #break #this causes the loops to stop
+  #}
+
+#We want single files to analyze if possible
+
+
 #-------------------------------------------------------------------------------
-#End
+#Pattern matching: 
+
+#Theory development (pattern matching) focused on submodels/functions and how these work
+
+#-------------------------------------------------------------------------------
+#Anlyze
+
+#Read concateneted files in R
