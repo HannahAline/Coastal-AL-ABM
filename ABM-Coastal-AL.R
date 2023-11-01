@@ -42,7 +42,6 @@ datum = read.csv(file.choose())
           #Be sure that known values are comparable to model outcomes
               #This is when we compare our survey data results with the model output
 
-#TIANNA IS BACK
 
 #-------------------------------------------------------------------------------
 
@@ -92,6 +91,9 @@ Meet2 <- sample( 1:nPop1, Meet1, replace = TRUE)
 for( j in 1:length(Meet2) ){
   Agent1[ Meet2[j], ]
 }
+
+#Table provides a summary of agents that interact with a dolphin?
+table( Agent1$State)
 
 #parameters
 eds           =unique #This is our original data, which will be loaded in
