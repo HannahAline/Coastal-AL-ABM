@@ -12,6 +12,8 @@ library(dplyr)
 # Load your demographic data from a CSV file (replace 'your_data.csv' with the actual file name)
 datum <- read.csv(file.choose())
 
+#Remove NA so the proportions make sense
+datum <- na.omit(datum)
 
 #-------------------------------------------------------------------------------
 
