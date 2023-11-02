@@ -15,86 +15,7 @@ datum <- read.csv(file.choose())
 #Remove NA so the proportions make sense
 datum <- na.omit(datum)
 
-#-------------------------------------------------------------------------------
 
-#Need to change categorical variables to factors
-
-#Race
-datum$Race = as.factor(datum$Race)
-#Spanish
-datum$Spanish = as.factor(datum$Spanish)
-#Gender
-datum$Gender = as.factor(datum$Gender)
-#GenderBin
-datum$GenderBin = as.factor(datum$GenderBin)
-#ALResident
-datum$ALResident = as.factor(datum$ALResident)
-#Education
-datum$Education = as.factor(datum$Education)
-#EducationBin
-datum$EducationBin = as.factor(datum$EducationBin)
-#Visitor
-datum$Visitor = as.factor(datum$Visitor)
-#Beach
-datum$Beach = as.factor(datum$Beach)
-#BeachBin
-datum$BeachBin = as.factor(datum$BeachBin)
-#Turtleview
-datum$Turtleview = as.factor(datum$Turtleview)
-#TurtleviewBin
-datum$TurtleviewBin = as.factor(datum$TurtleviewBin)
-#Dolphinview
-datum$Dolphinview = as.factor(datum$Dolphinview)
-#DolphinviewBin
-datum$DolphinviewBin = as.factor(datum$DolphinviewBin)
-#Wildlifeview
-datum$Wildlifeview = as.factor(datum$Wildlifeview)
-#WildlifeviewBin
-datum$WildlifeviewBin = as.factor(datum$WildlifeviewBin)
-#Fishbeach
-datum$Fishbeach = as.factor(datum$Fishbeach)
-#FishbeachBin
-datum$FishbeachBin = as.factor(datum$FishbeachBin)
-#Fishjetty
-datum$Fishjetty = as.factor(datum$Fishjetty)
-#FishjettyBin
-datum$FishjettyBin = as.factor(datum$FishjettyBin)
-#Fishboat
-datum$Fishboat = as.factor(datum$Fishboat)
-#FishboatBin
-datum$FishboatBin = as.factor(datum$FishboatBin)
-#Boatmotor
-datum$Boatmotor = as.factor(datum$Boatmotor)
-#BoatmotorBin
-datum$BoatmotorBin = as.factor(datum$BoatmotorBin)
-#Boatsail
-datum$Boatsail = as.factor(datum$Boatsail)
-#BoatsailBin
-datum$BoatsailBin = as.factor(datum$BoatsailBin)
-#Angler
-datum$Angler = as.factor(datum$Angler)
-#Pamphlet
-datum$Pamphlet = as.factor(datum$Pamphlet)
-#Sign
-datum$Sign = as.factor(datum$Sign)
-#Magnet
-datum$Magnet = as.factor(datum$Magnet)
-#Sticker
-datum$Sticker = as.factor(datum$Sticker)
-#Bycatch
-datum$Bycatch = as.factor(datum$Bycatch)
-#Lures
-datum$Lures = as.factor(datum$Lures)
-#Hooks
-datum$Hooks = as.factor(datum$Hooks)
-#Lights
-datum$Lights = as.factor(datum$Lights)
-#Phone
-datum$Phone = as.factor(datum$Phone)
-#PolicyBin
-datum$PolicyBin = as.factor(datum$PolicyBin)
-#WildlifeBin
-datum$WildlifeBin = as.factor(datum$WildlifeBin)
 
 #-------------------------------------------------------------------------------
 
@@ -116,7 +37,7 @@ education_proportions <- datum %>%
          
          # Define the number of agents and simulation steps
          num_agents <- 100 #This is how large the population is, and can be changed later on
-         num_steps <- 50 
+         num_steps <- 50 #How many times will agents interact with wildlife. 
          
          #Individual based - each "agent" is a person in a coastal population
          #  - each person/agent has properties
@@ -126,10 +47,16 @@ education_proportions <- datum %>%
          # Create a data frame to represent agents
          agents <- data.frame(
            agent_id = 1:num_agents,
+
            race = sample(datum$Race, num_agents, replace = TRUE, prob = race_proportions$proportion),#Assign race
            
            gender = sample(datum$Gender, num_agents, replace = TRUE, prob = gender_proportions$proportion), #Assign gender
            education = sample(datum$Education, num_agents, replace = TRUE, prob = education_proportions$proportion), #Assign education
+
+           race = sample(race_proportions$Race, num_agents, replace = TRUE, prob = race_proportions$proportion),#Assign race
+           gender = sample(gender_proportions$Gender, num_agents, replace = TRUE, prob = gender_proportions$proportion), #Assign gender
+           education = sample(education_proportions$Education, num_agents, replace = TRUE, prob = education_proportions$proportion), #Assign education
+
            policy_knowledge = rep(0, num_agents),  # Initialize policy knowledge to zero
            education_material = sample(c("sign", "pamphlet", "sticker", "magnet"), num_agents, replace = TRUE)
          )
