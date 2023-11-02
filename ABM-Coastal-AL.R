@@ -127,6 +127,7 @@ education_proportions <- datum %>%
          agents <- data.frame(
            agent_id = 1:num_agents,
            race = sample(datum$Race, num_agents, replace = TRUE, prob = race_proportions$proportion),#Assign race
+           
            gender = sample(datum$Gender, num_agents, replace = TRUE, prob = gender_proportions$proportion), #Assign gender
            education = sample(datum$Education, num_agents, replace = TRUE, prob = education_proportions$proportion), #Assign education
            policy_knowledge = rep(0, num_agents),  # Initialize policy knowledge to zero
