@@ -1,4 +1,4 @@
-################################################################################
+################################################################################ 
 #                                                                              #
 # Alabama Coastal Tourism Agent-Based Model                                    #
 #                                                                              #
@@ -9,11 +9,13 @@ setwd()
 # Load required packages
 library(dplyr)
 
-# Load your demographic data from a CSV file
+# Load your demographic data from a CSV file (replace 'your_data.csv' with the actual file name)
 datum <- read.csv(file.choose())
 
-#Remove NA so the proportions make sense (lets see if we still want to do this)
+#Remove NA so the proportions make sense
 datum <- na.omit(datum)
+
+
 
 #-------------------------------------------------------------------------------
 
@@ -43,7 +45,14 @@ education_proportions <- datum %>%
          #  - Agents/individuals to have behaviors based on those parameters
          
          # Create a data frame to represent agents
-        
+         agents <- data.frame(
+           agent_id = 1:num_agents,
+           race = sample(race_proportions$Race, num_agents, replace = TRUE, prob = race_proportions$proportion),#Assign race
+           gender = sample(gender_proportions$Gender, num_agents, replace = TRUE, prob = gender_proportions$proportion), #Assign gender
+           education = sample(education_proportions$Education, num_agents, replace = TRUE, prob = education_proportions$proportion), #Assign education
+           policy_knowledge = rep(0, num_agents),  # Initialize policy knowledge to zero
+           education_material = sample(c("sign", "pamphlet", "sticker", "magnet"), num_agents, replace = TRUE)
+         )
          
          # Define a function to model agent-education interactions
          interact_with_education <- function(agent, step) {
@@ -99,6 +108,7 @@ education_proportions <- datum %>%
          summary(agents$wildlife_interaction)
          
          # Visualize and analyze the data using ggplot2, dplyr, or other libraries.
+       
          
 
 #-------------------------------------------------------------------------------
@@ -174,3 +184,4 @@ education_proportions <- datum %>%
 #Anlyze
 
 #Read concateneted files in R
+
