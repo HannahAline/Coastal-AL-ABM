@@ -116,7 +116,7 @@ education_proportions <- datum %>%
          
          # Define the number of agents and simulation steps
          num_agents <- 100 #This is how large the population is, and can be changed later on
-         num_steps <- 50
+         num_steps <- 50 
          
          #Individual based - each "agent" is a person in a coastal population
          #  - each person/agent has properties
@@ -126,7 +126,7 @@ education_proportions <- datum %>%
          # Create a data frame to represent agents
          agents <- data.frame(
            agent_id = 1:num_agents,
-           race = sample(datum$Race, num_agents, replace = TRUE, prob = race_proportions$proportion),#Assign race#
+           race = sample(datum$Race, num_agents, replace = TRUE, prob = race_proportions$proportion),#Assign race
            gender = sample(datum$Gender, num_agents, replace = TRUE, prob = gender_proportions$proportion), #Assign gender
            education = sample(datum$Education, num_agents, replace = TRUE, prob = education_proportions$proportion), #Assign education
            policy_knowledge = rep(0, num_agents),  # Initialize policy knowledge to zero
@@ -212,7 +212,7 @@ education_proportions <- datum %>%
 
 #-------------------------------------------------------------------------------
 #Output
-
+         
 #Here we will record the results of the iteration
 
 
