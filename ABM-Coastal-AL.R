@@ -44,7 +44,7 @@ education_proportions <- datum %>%
          #  - parameters and attributes
          #  - Agents/individuals to have behaviors based on those parameters
          
-         # Create a data frame to represent agents
+         # Create a data frame to represent agents (This is still giving people NA)
          agents <- data.frame(
            agent_id = 1:num_agents,
            race = sample(race_proportions$Race, num_agents, replace = TRUE, prob = race_proportions$proportion),#Assign race
@@ -54,7 +54,7 @@ education_proportions <- datum %>%
            education_material = sample(c("sign", "pamphlet", "sticker", "magnet"), num_agents, replace = TRUE)
          )
          
-         # Define a function to model agent-education interactions
+         # Define a function to model agent-education interactions (Need to work on this)
          interact_with_education <- function(agent, step) {
            # Simulate agent-education interactions
            education_material <- agent$education_material
