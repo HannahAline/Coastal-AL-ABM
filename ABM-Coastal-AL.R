@@ -15,7 +15,7 @@ datum <- read.csv(file.choose())
 #Remove NA so the proportions make sense
 datum <- na.omit(datum)
 
-
+#This is the current model
 
 #-------------------------------------------------------------------------------
 
