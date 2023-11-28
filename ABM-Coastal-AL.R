@@ -4,112 +4,85 @@
 #                                                                              #
 ################################################################################
 
-setwd()
-
-# Load required packages
-library(dplyr)
-
-# Load your demographic data from a CSV file (replace 'your_data.csv' with the actual file name)
-datum <- read.csv(file.choose())
-
-#Remove NA so the proportions make sense
-datum <- na.omit(datum)
-
-#This is the current model
-
 #-------------------------------------------------------------------------------
 
-# Calculate demographic proportions
-race_proportions <- datum %>%
-  group_by(Race) %>%
-  summarize(count = n()) %>%
-  mutate(proportion = count / sum(count))
+# Load your raw data from the CSV file
+raw_data <- read.csv(file.choose())  # Replace "your_file.csv" with your actual file path
 
-gender_proportions <- datum %>%
-  group_by(Gender) %>%
-  summarize(count = n()) %>%
-  mutate(proportion = count / sum(count))
+# CSV columns are named "race", "gender", and "education"
+race_values <- na.omit(unique(raw_data$Race))
+gender_values <- na.omit(unique(raw_data$Gender))
+education_values <- na.omit(unique(raw_data$Education))
 
-education_proportions <- datum %>%
-  group_by(Education) %>%
-  summarize(count = n()) %>%
-  mutate(proportion = count / sum(count))
-         
-         # Define the number of agents and simulation steps
-         num_agents <- 100 #This is how large the population is, and can be changed later on
-         num_steps <- 50 #How many times will agents interact with wildlife. 
-         
-         #Individual based - each "agent" is a person in a coastal population
-         #  - each person/agent has properties
-         #  - parameters and attributes
-         #  - Agents/individuals to have behaviors based on those parameters
-         
-         # Create a data frame to represent agents (This is still giving people NA)
-         agents <- data.frame(
-           agent_id = 1:num_agents,
-           race = sample(race_proportions$Race, num_agents, replace = TRUE, prob = race_proportions$proportion),#Assign race
-           gender = sample(gender_proportions$Gender, num_agents, replace = TRUE, prob = gender_proportions$proportion), #Assign gender
-           education = sample(education_proportions$Education, num_agents, replace = TRUE, prob = education_proportions$proportion), #Assign education
-           policy_knowledge = rep(0, num_agents),  # Initialize policy knowledge to zero
-           education_material = sample(c("sign", "pamphlet", "sticker", "magnet"), num_agents, replace = TRUE)
-         )
-         
-         # Define a function to model agent-education interactions (Need to work on this)
-         interact_with_education <- function(agent, step) {
-           # Simulate agent-education interactions
-           education_material <- agent$education_material
-           # You can implement specific behaviors for each material here
-           if (education_material == "sign") {
-             # Interaction with sign
-             # Update agent's knowledge based on the interaction
-             agent$policy_knowledge <- agent$policy_knowledge + 1
-           } else if (education_material == "pamphlet") {
-             # Interaction with pamphlet
-             # Update agent's knowledge based on the interaction
-             agent$policy_knowledge <- agent$policy_knowledge + 2
-           } else if (education_material == "sticker") {
-             # Interaction with sticker
-             # Update agent's knowledge based on the interaction
-             agent$policy_knowledge <- agent$policy_knowledge + 3
-           } else if (education_material == "magnet") {
-             # Interaction with magnet
-             # Update agent's knowledge based on the interaction
-             agent$policy_knowledge <- agent$policy_knowledge + 4
-           }
-           return(agent)
-         }
-         
-         # Define a function to model agent-wildlife interactions
-         interact_with_wildlife <- function(agent, step) {
-           # Simulate agent-wildlife interactions based on policy knowledge
-           if (agent$policy_knowledge == 1) {
-             # Positive interaction with wildlife
-             # You can implement specific behaviors here
-             agent$wildlife_interaction <- rnorm(1, mean = 5, sd = 2)
-           } else {
-             # Negative interaction with wildlife
-             # You can implement different behaviors here
-             agent$wildlife_interaction <- rnorm(1, mean = 2, sd = 1)
-           }
-           return(agent)
-         }
-         
-         # Run the simulation
-         for (step in 1:num_steps) {
-           for (i in 1:num_agents) {
-             # Interact with education material
-             agents[i, ] <- interact_with_education(agents[i, ], step)
-             # Interact with wildlife
-             agents[i, ] <- interact_with_wildlife(agents[i, ], step)
-           }
-         }
-         
-         # Explore the resulting data
-         summary(agents$wildlife_interaction)
-         
-         # Visualize and analyze the data using ggplot2, dplyr, or other libraries.
-       
-         
+# Calculate nested proportions for all combinations in your raw data
+nested_counts <- list()
+
+for (gender in gender_values) {
+  for (race in race_values) {
+    for (edu in education_values) {
+      count <- sum(!is.na(raw_data$Gender) & !is.na(raw_data$Race) & !is.na(raw_data$Education) &
+                     raw_data$Gender == gender & raw_data$Race == race & raw_data$Education == edu)
+      nested_counts[[paste(gender, race, edu)]] <- count
+    }
+  }
+}
+
+# Function to generate population based on nested proportions and adjust for rounding discrepancies
+generate_population <- function(size, counts) {
+  total_counts <- sum(unlist(counts))
+  scaling_factor <- size / total_counts
+  
+  generated_population <- data.frame()
+  remaining_individuals <- size
+  
+  for (gender in gender_values) {
+    for (race in race_values) {
+      for (edu in education_values) {
+        # Calculate the number of individuals for each combination and adjust for rounding discrepancies
+        count <- round(counts[[paste(gender, race, edu)]] * scaling_factor)
+        individuals <- data.frame(
+          gender = rep(gender, count),
+          race = rep(race, count),
+          education = rep(edu, count)
+        )
+        # Update remaining individuals after rounding
+        remaining_individuals <- remaining_individuals - count
+        
+        # Combine generated individuals into the population dataframe
+        generated_population <- rbind(generated_population, individuals)
+      }
+    }
+  }
+  
+  # Distribute remaining individuals based on rounding differences
+  if (remaining_individuals > 0) {
+    extra_individuals <- raw_data[sample(nrow(raw_data), remaining_individuals), ]
+    generated_population <- rbind(generated_population, extra_individuals)
+  }
+  
+  return(generated_population)
+}
+
+# Function to calculate proportions in the generated population
+calculate_generated_proportions <- function(population) {
+  return(prop.table(table(population$race, population$gender, population$education)))
+}
+
+# Generate population using the nested proportions and adjusted rounding
+population_size <- 2000  # Adjust as needed
+population <- generate_population(population_size, nested_counts)
+
+# Calculate proportions in the generated population
+generated_proportions <- calculate_generated_proportions(population)
+
+# Calculate proportions in the original datasetR
+original_proportions <- prop.table(table(raw_data$Race, raw_data$Gender, raw_data$Education))
+
+# Compare proportions between original and generated data
+proportions_match <- all.equal(original_proportions, generated_proportions)
+
+# View the comparison result
+print(proportions_match)
 
 #-------------------------------------------------------------------------------
 
