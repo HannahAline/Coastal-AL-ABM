@@ -6,16 +6,16 @@
 
 #-------------------------------------------------------------------------------
 
-# Load your raw data from the CSV file
-raw_data <- read.csv(file.choose())  # Replace "your_file.csv" with your actual file path
+# Load raw data from the CSV file
+raw_data <- read.csv(file.choose())
 
-# CSV columns are named "race", "gender", and "education"
+# CSV columns are named "Race", "Gender", and "Education"
 race_values <- na.omit(unique(raw_data$Race))
 gender_values <- na.omit(unique(raw_data$Gender))
 education_values <- na.omit(unique(raw_data$Education))
 
-# Calculate nested proportions for all combinations in your raw data
-nested_counts <- list()
+# Calculate nested proportions for all combinations in raw data
+nested_counts <- list() #This counts all the possible proportions
 
 for (gender in gender_values) {
   for (race in race_values) {
@@ -69,7 +69,7 @@ calculate_generated_proportions <- function(population) {
 }
 
 # Generate population using the nested proportions and adjusted rounding
-population_size <- 2000  # Adjust as needed
+population_size <- 1000  # Adjust as needed
 population <- generate_population(population_size, nested_counts)
 
 # Calculate proportions in the generated population
@@ -83,6 +83,122 @@ proportions_match <- all.equal(original_proportions, generated_proportions)
 
 # View the comparison result
 print(proportions_match)
+
+#-------------------------------------------------------------------------------
+# Function to simulate an interaction with educational material (e.g., a sign) and update knowledge score
+interact_with_material_percentage <- function(population, knowledge_percentage_gain) {
+  population$knowledge_score <- pmin(population$knowledge_score + knowledge_percentage_gain, 1)  # Limit knowledge score to 1
+  return(population)
+}
+
+# Function to simulate forgetting knowledge with random chances
+forget_knowledge_random_chance <- function(population, knowledge_loss) {
+  for (i in 1:nrow(population)) {
+    # Generate a random forgetting chance for each individual
+    forgetting_chance <- runif(1, min = 0, max = 1)  # Random chance between 0 and 1 (adjust as needed)
+    
+    # Simulate a random chance of forgetting for each individual
+    if (runif(1) < forgetting_chance) {
+      population$knowledge_score[i] <- pmax(population$knowledge_score[i] - knowledge_loss, 0)  # Limit knowledge score to 0
+    }
+  }
+  return(population)
+}
+
+# Function to simulate behavior based on knowledge score
+simulate_behavior_based_on_knowledge <- function(population, positive_behavior_threshold) {
+  for (i in 1:nrow(population)) {
+    # Simulate behavior based on knowledge score
+    if (population$knowledge_score[i] > positive_behavior_threshold) {
+      population$behavior[i] <- "Positive"  # Good behavior
+    } else {
+      population$behavior[i] <- "Negative"  # Bad behavior
+    }
+  }
+  return(population)
+}
+
+# Function to simulate interactions with different educational materials and update knowledge score
+interact_with_material <- function(population, material_type, knowledge_value) {
+  population$knowledge_score <- pmin(population$knowledge_score + knowledge_value, 1)  # Limit knowledge score to 1
+  return(population)
+}
+
+# Function to simulate interactions with various educational materials based on random chances
+simulate_interactions_with_materials <- function(population, interaction_chances, knowledge_values, interaction_matrix) {
+  for (i in 1:nrow(population)) {
+    # Simulate a random chance of interacting with different materials for each individual
+    for (j in 1:length(interaction_chances)) {
+      if (runif(1) < interaction_chances[j]) {
+        population[i, ] <- interact_with_material(population[i, ], j, knowledge_values[j])
+        interaction_matrix[i, j] <- interaction_matrix[i, j] + 1  # Increment interaction count for the material type
+      }
+    }
+  }
+  return(list(population, interaction_matrix))
+}
+
+# Function to simulate interactions, forgetting, and behavior over multiple loops
+simulate_agent_behavior_over_time <- function(population, num_iterations, interaction_chances, knowledge_values, knowledge_loss, positive_behavior_threshold) {
+  interaction_matrix <- matrix(0, nrow = nrow(population), ncol = length(interaction_chances))  # Matrix to track interactions
+  
+  for (loop in 1:num_iterations) {
+    # Simulate interactions with different educational materials based on random chances
+    result <- simulate_interactions_with_materials(population, interaction_chances, knowledge_values, interaction_matrix)
+    population <- result[[1]]
+    interaction_matrix <- result[[2]]
+    
+    # Simulate forgetting knowledge with random chances
+    population <- forget_knowledge_random_chance(population, knowledge_loss)
+    
+    # Simulate behavior based on knowledge score after interactions and forgetting
+    population <- simulate_behavior_based_on_knowledge(population, positive_behavior_threshold)
+  }
+  return(list(population, interaction_matrix))
+}
+
+# Set initial knowledge score for each individual in the population to 0
+population$knowledge_score <- rep(0, nrow(population))
+
+# Parameters for educational materials
+num_materials <- 4  # Number of educational material types
+#The order is pamphlet, sign, magnet, sticker
+interaction_chances <- c(0.15, 0.2, 0.05, 0.05)  # Change these values as needed for each material 
+knowledge_values <- c(0.1, 0.25, 0.05, 0.15)  # Knowledge values corresponding to each material
+
+# Parameters for simulation
+num_iterations <- 10  # Change this value as needed
+knowledge_loss_on_forget <- 0.1  # Change this value as needed
+positive_behavior_threshold <- 0.5  # Threshold for positive behavior, change as needed
+
+# Simulate interactions, forgetting, and behavior over multiple loops for the agents
+result <- simulate_agent_behavior_over_time(
+  population,
+  num_iterations,
+  interaction_chances,
+  knowledge_values,
+  knowledge_loss_on_forget,
+  positive_behavior_threshold
+)
+
+population <- result[[1]]
+interaction_matrix <- result[[2]]
+
+# Display the behavior for a few individuals after interactions, forgetting, and behavior simulation
+for (i in 1:5) {
+  cat("Individual", i, "Behavior:\n")
+  print(population$behavior[i])
+  cat("\n")
+}
+
+# Display interaction matrix for a few individuals
+cat("Interaction Matrix for a Few Individuals:\n")
+print(interaction_matrix[1:5, ])
+
+
+#-------------------------------------------------------------------------------
+
+
 
 #-------------------------------------------------------------------------------
 
